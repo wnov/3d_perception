@@ -186,7 +186,7 @@ class Attention(nn.Module):
         if mask:
             mask = rearrange(mask, "b j -> b j 1")
             out = out.masked_fill(~mask, 0.)
-        return out, itermediate
+        return out
 
 
 class FeedForward(nn.Module):
@@ -297,9 +297,8 @@ class AttenLayer(nn.Module):
                 prev_mask=None,
                 mem=None):
         res = x
-        x, itermediate = self.self_attention(self.norm(x), None, mask,
-                                             context_mask, attn_mask,
-                                             prev_mask, mem)
+        x = self.self_attention(self.norm(x), None, mask, context_mask,
+                                attn_mask, prev_mask, mem)
         x = self.residual(x, res)
 
         if self.type == 'decoder':
